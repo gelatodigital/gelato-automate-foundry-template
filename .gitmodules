@@ -6,7 +6,3 @@
 	path = lib/openzeppelin-contracts
 	url = https://github.com/Openzeppelin/openzeppelin-contracts
 	branch = v4.8.0
-[submodule "lib/relay-context-contracts"]
-	path = lib/relay-context-contracts
-	url = https://github.com/gelatodigital/relay-context-contracts
-	branch = v2.1.0
