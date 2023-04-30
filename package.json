@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ts-node helpers/test.ts",
     "fork": "ts-node helpers/fork.ts",
     "deploy": "ts-node helpers/deploy.ts",
     "callSyncFee":"ts-node examples-sdk/callSyncFee.ts",

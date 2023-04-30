@@ -1,94 +1,105 @@
-# Gelato Foundry template for Relay
+# Gelato Foundry template for Automate
 
-The purpose of this repo is to showcase examples of using Gelato Relay with Foundry enviroment. 
+The purpose of this repo is to showcase examples of using Gelato Auomate in a Foundry enviroment. 
 
 
 ## Geting started
 
 Fist we need to install Foundry in order to run `forge` commands. We can found all Foundry relevant information at the [Foundry book](https://book.getfoundry.sh/), and wth regards to [installation](https://book.getfoundry.sh/getting-started/installation). The method I've used is **build from source**
 
-Once we have foundry installed we can move on
+Once we have foundry installed we can move 
 
 ### forge init
-The command `forge init` would scaffold a new foundry project, we have inlcuded relay examples and added typescript support for some helper funcitons (the vanilla forge repo does not have npm_modules)
+We have inlcuded in this repo autoamte examples and added typescript support for some helper funcitons. Running `forge init` would create a fresh foudry repo. In our case we will clone this repo.
 
 So let's go ahead:
 
-`git clone https://github.com/donoso-eth/gelato-foundry-relay-template`
+`git clone https://github.com/gelato/gelato-foundry-automate-template`
 
-`cd gelato-foundry-relay-template`
+`cd gelato-foundry-automate-template`
 
 `yarn`
 
 
-### forge? vs helpers
-When starting with foundry sometimes is difficult to remember the diferent commnads and parameters, therefore we have created a set of scripts to ease the foundry onboarding.
 
-There are three main commands in `forge`, `cast` and `anvil`. We don't use `cast` in this repo, it is used to query the blockchaoin. `anvil` is used to spin a local blockchain node like hardhat.
+## forge vs helpers
+There are three main commands in `forge`, `cast` and `anvil`.  `cast` is used to query the blockchain from the command line and we won't use it in this repo. `anvil` is used to spin a local blockchain node like hardhat.
 
-`anvil 
+When starting with foundry sometimes is difficult to remember the diferent cli commnads and parameters we need to use, therefore we have created a set of scripts to ease the foundry onboarding.
 
+### anvil
+The command we will use to fork mainnet will be:
+`anvil --fork-url=RPC --fork-block-number=BLOCK_NUMBER`
 
-## Gelato Relay sdk
+We hace created a helper script to ne able to run
+`npm run fork`
+
+Specific avil params can fe found [here](https://book.getfoundry.sh/anvil/)
+
+### forge test
+The forge comand to run one specific test in a specific file would look like:
+
+`forge test -vv' --fork-url=RPC --match-path=PATH_TO_FILE --match-test=TEST_NAME`
+
+We have created a helper method in typescript [here]() where you can input the params and run a simple
+`npm run test`
+
+Specific test params can fe found [here](https://book.getfoundry.sh/reference/forge/forge-test)
+
   &nbsp; 
+## Gelato Automate Examples
 
-| Gelato Auth | Payment              | Inheriting Contract            | SDK/API method                |
-| ----------- | -------------------- | ------------------------------ | ----------------------------- |
-| no          | User                 | GelatoRelayContext             | relayWithSyncFee              |
-| yes         | User                 | GelatoRelayContextERC2771      | relayWithSyncFeeERC2771       |
-| no          | 1Balance             | n. a.                          | relayWithSponsoredCall        |
-| yes1       | 1Balance             | ERC2771Context                 | relayWithSponsoredCallERC2771 |
+1) Before start to testing we would need to:
+`copy .env-template to .env` and add the RPC you are using as well as the private key (pk only in case you want to deploy to testnet)
 
-relay-context-contracts#gelatorelayfeecollector).
-1. A SponsorKey is required; visit Gelato 1Balance [here](https://relay.gelato.network/)
+2) run `npm run fork`
 
+3) run `npm run test`
 
-  &nbsp; 
-### callSyncFee
+In the contracts folder we have following contract structure
 
-Contrat code in [https://github.com/donoso-eth/gelato-foundry-relay-template/blob/main/src/CounterSyncFee.sol](https://github.com/donoso-eth/gelato-foundry-relay-template/blob/main/src/CounterSyncFee.sol)
+-- contractCreator
+   -- wi 
 
-Contract verified at [https://goerli.etherscan.io/address/0xaacd421be196dbe6dc4e7c71d374dbb579537593#readContract](https://goerli.etherscan.io/address/0xaacd421be196dbe6dc4e7c71d374dbb579537593#readContract)
+The gelato folder contain all of the helper contracts that are needed for all of the examples.
 
-**SDK Implementation**
+This contract structure is replicated in the test folder with one test file `.t.sol` per contract.
 
+We run 3 tests on every contract:
 
+1 - Create a task and check if the TaskId is correct
+
+2 - Create a task and execute expecting revert as we haven't any funds (either treasuty or contract)
+
+3 - Create a task, fund the treasury or contract, execute the task and check if the cunter has increase in 1.
+
+The test execution follows in every example this pattern:
 ```ts
-  const { data } = await counterSyncFe.populateTransaction.setNumber(4);
+ // impersonate Gelato executor
+    vm.prank(executor); // Gelato executor address
 
-  // populate the relay SDK request body 
-  const request = {
-    chainId: 5, // Goerli in this case
-    target: addressCallSyncFee, // target contract address
-    data: data!, // encoded transaction datas
-    isRelayContext: true, // are we using context contracts
-    feeToken: feeToken, // token to pay the relayer
-  };
+     // recreate Module Data (exactly same code used by task creation)
+    ModuleData memory moduleData =
+      ModuleData({modules: new Module[](1), args: new bytes[](1)});
 
-  // send relayRequest to Gelato Relay API 
+    moduleData.modules[0] = Module.RESOLVER;
 
-  const relayResponse = await relay.callWithSyncFee(request);
-  let taskId = relayResponse.taskId;
-  ```
+    moduleData.args[0] =
+      abi.encode(address(counter), abi.encodeCall(counter.checker, ()));
 
+    // encode exec Data
+    bytes memory execData =
+      abi.encodeWithSelector(counter.increaseCount.selector, 1);
 
-### sponsoredCall
-
-
-Contrat code in [https://github.com/donoso-eth/gelato-foundry-relay-template/blob/main/src/CounterSponsored.sol](https://github.com/donoso-eth/gelato-foundry-relay-template/blob/main/src/CounterSponsored.sol)
-
-
-
-Contract verified at [https://goerli.etherscan.io/address/0xe486ea0bc6b7e21cf56c3e55895830a512625b35](https://goerli.etherscan.io/address/0xe486ea0bc6b7e21cf56c3e55895830a512625b35)  
-
-  &nbsp; 
-
-### sponsoredCallERC2771
-
-Contrat code in [https://github.com/donoso-eth/gelato-foundry-relay-template/blob/main/src/CounterSponsoredERC2771.sol](https://github.com/donoso-eth/gelato-foundry-relay-template/blob/main/src/CounterSponsoredERC2771.sol)
-
-Contract verified at [ https://goerli.etherscan.io/address/0xd11decb96f0fcb8f92c0ed146dce8fb726d1c676](https://goerli.etherscan.io/address/0xd11decb96f0fcb8f92c0ed146dce8fb726d1c676)
-
-
-
+    IAutomate(automate).exec(
+      address(counter),
+      address(counter),
+      execData,
+      moduleData,
+      0.01 ether,
+      ETH,
+      false,
+      true
+    );
+    ```
 

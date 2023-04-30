@@ -10,7 +10,7 @@ solc = '0.8.17'
 runs = 1000
 
 [fmt]
-line_length = 200
+line_length = 80
 tab_width = 2
 bracket_spacing = true
 

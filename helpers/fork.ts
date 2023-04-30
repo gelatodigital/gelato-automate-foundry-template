@@ -6,18 +6,16 @@ const forkChain = async () => {
  
     const { spawn } = await import("child_process");
 
-    const RPC = process.env['RPC']!
-
+    const RPC = process.env['RPC']! 
     let params = ["-f",RPC]
 
-    let blockNumber=8298503;
+    let blockNumber;
 
     if (blockNumber)  {
          params.push(`--fork-block-number=${blockNumber}`)
     }
 
     /// You can add as much customs params as wanted
-
     const childProcess = spawn('anvil',params, {
         stdio: "inherit",
       });
