@@ -97,7 +97,7 @@ contract CounterTest is Test, Gelato {
     // impersonate Gelato executor
     vm.prank(executor); // Gelato executor address
 
-     // recreate Module Data (exactly same code used by task creation)
+    // recreate Module Data (exactly same code used by task creation)
     ModuleData memory moduleData =
       ModuleData({modules: new Module[](1), args: new bytes[](1)});
 
