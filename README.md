@@ -1,6 +1,6 @@
 # Gelato Foundry template for Automate
 
-The purpose of this repo is to showcase examples of using Gelato Auomate in a Foundry enviroment. 
+The purpose of this repo is to showcase examples of using Gelato Automate in a Foundry enviroment. 
 
 
 ## Geting started
@@ -31,7 +31,7 @@ When starting with foundry sometimes is difficult to remember the diferent cli c
 The command we will use to fork mainnet will be:
 `anvil --fork-url=RPC --fork-block-number=BLOCK_NUMBER`
 
-We hace created a helper script to ne able to run
+We hace created a helper script [here](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/helpers/fork.ts) to be able to run
 `npm run fork`
 
 Specific avil params can fe found [here](https://book.getfoundry.sh/anvil/)
@@ -41,7 +41,7 @@ The forge comand to run one specific test in a specific file would look like:
 
 `forge test -vv' --fork-url=RPC --match-path=PATH_TO_FILE --match-test=TEST_NAME`
 
-We have created a helper method in typescript [here]() where you can input the params and run a simple
+We have created a helper method in typescript [here](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/helpers/test.ts) where you can input the params and run a simple
 `npm run test`
 
 Specific test params can fe found [here](https://book.getfoundry.sh/reference/forge/forge-test)
@@ -56,14 +56,38 @@ Specific test params can fe found [here](https://book.getfoundry.sh/reference/fo
 
 3) run `npm run test`
 
-In the contracts folder we have following contract structure
+In the [contracts folder](https://github.com/gelatodigital/gelato-automate-foundry-template/tree/main/src) we have following contract structure
 
--- contractCreator
-   -- wi 
+**contractCreator**
 
-The gelato folder contain all of the helper contracts that are needed for all of the examples.
+   -- withoutTreasury
 
-This contract structure is replicated in the test folder with one test file `.t.sol` per contract.
+  * [CounterResolverTaskCreatorWT.sol](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/src/contractCreator/withoutTreasury/CounterResolverTaskCreatorWT.sol) 
+
+  * [CounterSingleExecTaskCreatorWT.sol](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/src/contractCreator/withoutTreasury/CounterSingleExecTaskCreatorWT.sol) 
+
+  * [CounterTimeTaskCreatorWT.sol](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/src/contractCreator/withoutTreasury/CounterTimeTaskCreatorWT.sol) 
+
+  -- withTreasury   
+
+  * [CounterResolverTaskCreator.sol](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/src/contractCreator/withTreasury/CounterResolverTaskCreator.sol) 
+
+  * [CounterSingleExecTaskCreatorWT.sol](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/src/contractCreator/withTreasury/CounterSingleExecTaskCreator.sol) 
+
+  * [CounterTimeTaskCreator.sol](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/src/contractCreator/withTreasury/CounterTimeTaskCreator.sol) 
+
+
+  **userCreator**
+
+ -- withoutTreasury
+  * [CounterWT.sol](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/src/userCreator/withoutTreasury/CounterWT.sol)   
+
+ -- withTreasury
+  * [Counter.sol](https://github.com/gelatodigital/gelato-automate-foundry-template/blob/main/src/userCreator/withTreasury/Counter.sol)      
+
+The [gelato folder](https://github.com/gelatodigital/gelato-automate-foundry-template/tree/main/src/gelato) contain all of the helper contracts that are needed for all of the examples.
+
+This contract structure is replicated in the [test folder](https://github.com/gelatodigital/gelato-automate-foundry-template/tree/main/test) with one test file `.t.sol` per contract.
 
 We run 3 tests on every contract:
 
